@@ -1,4 +1,6 @@
-use image::{ImageBuffer, Rgb, RgbImage};
+use std::io;
+
+use image::{png::PngEncoder, ColorType, ImageBuffer, ImageError, Rgb, RgbImage};
 
 use hsl::HSL;
 use nibbler::Nibbler;
@@ -116,6 +118,14 @@ impl<'a> Identicon<'a> {
         }
 
         image
+    }
+
+    /// Write out a PNG file.
+    pub fn to_png<W: io::Write>(&self, writer: &mut W) -> Result<(), ImageError> {
+        let img = self.image();
+        let encoder = PngEncoder::new(writer);
+        let (w, h) = img.dimensions();
+        encoder.encode(img.as_ref(), w, h, ColorType::Rgb8)
     }
 }
 
