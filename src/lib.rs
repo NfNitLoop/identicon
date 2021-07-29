@@ -42,24 +42,26 @@ impl<'a> Identicon<'a> {
                 let lum = map(l, 0, 255, 0, 20);
 
                 HSL::new(hue, 65.0 - sat, 75.0 - lum).rgb()
-            },
-            Mode::IdenticonJS(IdenticonJSOptions{saturation, brightness}) => {
+            }
+            Mode::IdenticonJS(IdenticonJSOptions {
+                saturation,
+                brightness,
+            }) => {
                 // Use last 28 bits to determine the hue.
                 // Note: Identicon.js uses the last bytes no matter how long the hash is:
                 let l = self.source.len();
-                let mut h:u32 = self.source[l-4] as u32 & 0x0f;
-                h = h << 8 | (self.source[l-3] as u32);
-                h = h << 8 | (self.source[l-2] as u32);
-                h = h << 8 | (self.source[l-1] as u32);
+                let mut h: u32 = self.source[l - 4] as u32 & 0x0f;
+                h = h << 8 | (self.source[l - 3] as u32);
+                h = h << 8 | (self.source[l - 2] as u32);
+                h = h << 8 | (self.source[l - 1] as u32);
 
                 let hue = map(h, 0, 0x0f_ff_ff_ff, 0, 360);
                 let sat = saturation * 100.0;
                 let lum = brightness * 100.0;
 
                 HSL::new(hue, sat, lum).rgb()
-            },
+            }
         }
-      
     }
 
     fn rect(image: &mut RgbImage, x0: u32, y0: u32, x1: u32, y1: u32, color: Rgb<u8>) {
