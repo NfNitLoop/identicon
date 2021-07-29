@@ -4,7 +4,7 @@ use std::io;
 use std::io::Result;
 use std::process::exit;
 
-use image::png::PNGEncoder;
+use image::png::PngEncoder;
 use image::ColorType;
 use md5::{Digest, Md5};
 
@@ -25,7 +25,7 @@ fn generate(input: &[u8]) -> Result<()> {
     let image = identicon.image();
     let (width, height) = image.dimensions();
     let output = &mut io::stdout();
-    let encoder = PNGEncoder::new(output);
+    let encoder = PngEncoder::new(output);
     encoder
         .encode(image.as_ref(), width, height, ColorType::Rgb8)
         .map_err(|e| io::Error::new(io::ErrorKind::Other, e))
@@ -37,7 +37,7 @@ fn hash() -> Result<[u8; 16]> {
     let mut digest = Md5::new();
     io::copy(&mut reader, &mut digest)?;
 
-    let result = digest.result();
+    let result = digest.finalize();
 
     let mut bytes = [0; 16];
     bytes.copy_from_slice(&result);
