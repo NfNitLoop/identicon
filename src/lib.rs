@@ -12,6 +12,7 @@ pub struct Identicon<'a> {
     source: &'a [u8],
     size: u32,
     mode: Mode,
+    background: Rgb<u8>,
 }
 
 impl<'a> Identicon<'a> {
@@ -20,11 +21,17 @@ impl<'a> Identicon<'a> {
             source: source,
             size: 420,
             mode: Mode::GitHub,
+            background: Rgb([240, 240, 240]),
         }
     }
 
     pub fn mode(mut self, mode: Mode) -> Self {
         self.mode = mode;
+        self
+    }
+
+    pub fn background_rgb(mut self, r: u8, g: u8, b: u8) -> Self {
+        self.background = Rgb([r,g,b]);
         self
     }
 
@@ -95,10 +102,9 @@ impl<'a> Identicon<'a> {
         let sprite_size = 5;
         let margin = pixel_size / 2;
 
-        let background = Rgb([240, 240, 240]);
         let foreground = self.foreground();
 
-        let mut image: RgbImage = ImageBuffer::from_pixel(self.size, self.size, background);
+        let mut image: RgbImage = ImageBuffer::from_pixel(self.size, self.size, self.background);
 
         for (row, pix) in self.pixels().chunks(sprite_size).enumerate() {
             for (col, painted) in pix.iter().enumerate() {
